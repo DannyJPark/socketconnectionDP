@@ -1,5 +1,6 @@
 package application;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.Socket;
@@ -16,6 +17,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -32,7 +35,8 @@ import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import application.PatientInfo;
 
 
@@ -64,7 +68,23 @@ public class PatientController implements Initializable {
 	 String colorS=colors.toString();
 	 double sliders=2;
 	 //String[] pID; String[] pName;
+	 @FXML
 	 
+	 	public TextField ID,Name, Sex, Age, Phone,Chat,Prescription1,Prescription2,Prescription3,Disease1,Disease2;
+		public Button Login,NewID, Logout,Submit,TreatmentSave,Quit, ChatSend,InfoSave, clearsCanvas;	 
+		public TextArea TalkBoard, Sx, PHx, FHx, Tx;
+		public PasswordField PW;
+		public Label LTalkBoard,LName, LSex, LAge, LPhone,LSx,LPHx,LFHx, LDx, LTx, LPrescription1,LPrescription2,LPrescription3;
+		public Label Label1, Label2, Label3, Label4, Label5;
+		
+		public ColorPicker colorpick;
+		public Canvas canvas, canvasef;
+		public Button  Clear;
+		
+		public Button fileChooserButton;
+		public ImageView imgView = new ImageView();
+		public Stage stage;
+		
 	
 	 public void startClient(String IP, int port) {
 	        Thread thread = new Thread() {
@@ -133,7 +153,17 @@ public class PatientController implements Initializable {
 			 //String parts[];
 				String[] pars = Msg.split(":");
 		//		System.out.println("Patient Receive: "+Msg);
-				 
+				
+				
+				if  (pars[0].equals("DoctorInfo")) {
+					
+					receivedDoctorID = pars[1].split(">")[0];
+				//	rPatientName2=pars[1].split(">")[2];
+					System.out.println("DoctorInfo:"+receivedDoctorID+">"+MyID);
+							//StartConnect.setDisable(false);
+	
+						//	selectedPatientName=rPatientName2;
+						}
 				
 				
 				
@@ -159,22 +189,24 @@ public class PatientController implements Initializable {
 					receivedDoctorID = pars[1].split(">")[0];
 					receivedPatientID =pars[1].split(">")[1];
 					DoctorID=receivedDoctorID;
-					
-					if(receivedPatientID.equals(MyID)) {
+					if(receivedPatientID.equals(MyID)){
 						
 								Chat.setDisable(false);
 								ChatSend.setDisable(false);
 								TalkBoard.setDisable(false);
-					}
+								
+						
+						}
 				}
 				
 				else if (pars[0].equals("chat")) {
 					pars[1].split(">");
 					receivedDoctorID = pars[1].split(">")[0];
 					receivedPatientID =pars[1].split(">")[1];
+					
 					if((receivedPatientID.equals(MyID)) && (receivedDoctorID.equals(DoctorID))){
 							rChats=pars[1].split(">")[2];
-							TalkBoard.appendText("[" + DoctorName + "] "+rChats+"\n");				
+							TalkBoard.appendText("[" + DoctorName + "] "+rChats);				
 						}
 				}
 				
@@ -242,9 +274,7 @@ public class PatientController implements Initializable {
 				else if (pars[0].equals("patientLoginFail")) {
 					loginFail();
 					
-				} 
-		
-			
+				}
 				
 		
 				
@@ -258,6 +288,7 @@ public class PatientController implements Initializable {
 	                	
 	                    OutputStream out = socket.getOutputStream();
 	                    byte[] buffer = message.getBytes("UTF-8");
+	                    
 	                    out.write(buffer);
 	                    out.flush();
 	                } catch (Exception e) {
@@ -269,26 +300,6 @@ public class PatientController implements Initializable {
 	        thread1.start();
 	        }	 
 		
-		 @FXML
-		 
-		 	public TextField ID,Name, Sex, Age, Phone,Chat,Prescription1,Prescription2,Prescription3,Disease1,Disease2;
-			public Button Login,NewID, Logout,Submit,TreatmentSave,Quit, ChatSend,InfoSave;	 
-			public TextArea TalkBoard, Sx, PHx, FHx, Tx;
-			public PasswordField PW;
-			public Label LTalkBoard,LName, LSex, LAge, LPhone,LSx,LPHx,LFHx, LDx, LTx, LPrescription1,LPrescription2,LPrescription3;
-			public Label Label1, Label2, Label3, Label4, Label5;
-			
-			public ColorPicker colorpick;
-			public Canvas canvas, canvasef;
-			public Button  Clear;
-			 
-		//	 public RadioButton strokeRB,fillRB;
-			
-			 
-			 
-		//	 public ListView PlayerList;
-			
-			 
 			 
 			 @Override
 				public void initialize(URL url, ResourceBundle rb) {
@@ -312,14 +323,14 @@ public class PatientController implements Initializable {
 			 if((!ID.getText().equals("")) && (!PW.getText().equals(""))) {
 			 
 				 send("patientLoginInfo:" +ID.getText()+">"+MasterID+">"+PW.getText());
+				
 			
 			 }
 		    }
 		 
 		 public void loginSuccess() {
-		               //     msgbox.setAlertType(AlertType.CONFIRMATION);
-		             //       msgbox.setContentText("로그인 되었습니다.!!");
-		                    
+			 //     msgbox.setAlertType(AlertType.CONFIRMATION);
+             //       msgbox.setContentText("로그인 되었습니다.!!");
 		                    loginOK=1;
 		                    System.out.println("환자 : 로그인 성공");
 		          //          riD,rPW,rName,rSex,rAge,rPhone,rPMHx,rDrugHx
@@ -387,9 +398,9 @@ public class PatientController implements Initializable {
 		@FXML
 	    private void NewIDOnClick(ActionEvent e) {
 
-			msgbox.setAlertType(AlertType.CONFIRMATION);
-			msgbox.setContentText("<알림> "+ ID.getText() + "님을 새로 가입합니다.!!");
-			msgbox.showAndWait();
+		msgbox.setAlertType(AlertType.CONFIRMATION);
+        msgbox.setContentText("<알림> "+ ID.getText() + "님을 새로 가입합니다.!!");
+        msgbox.showAndWait();
         
            
             	
@@ -410,10 +421,6 @@ public class PatientController implements Initializable {
     			
     			InfoSave.setDisable(false);
                
-       
-        
-        
-        
     }
 	
 		
@@ -421,10 +428,13 @@ public class PatientController implements Initializable {
 	    private void SubmitOnClick(ActionEvent e)
 	    {
 		//	send("patientSubmit:" +ID.getText() + "," +Name.getText()+ "," +  Age.getText() + "," + Sex.getText()+ "," + Phone.getText()+ "," +PHx.getText()+ "," +FHx.getText()+  "," +Sx.getText());
-			send("patientSubmit:" + MyID+">"+"AllDoctor" + ">" +MyName );
+			send("patientSubmit:" + MyID+ ">" +"AllDoctor" + ">" +MyName );
 			System.out.println("patientSubmit:" + MyID+">"+DoctorID + ">" +MyName);
-			send("chat:"+ MyID+">"+"AllDoctor"  +">"+MyName+" 님이 진료를 신청하였습니다. \n");
+			send("chat:"+ MyID+">"+"AllDoctor" +">"+MyName+" 님이 진료를 신청하였습니다. \n");
+			//System.out.println("patientSubmit:" + MyID+">"+masterID + ">" +MyName);
 			TalkBoard.appendText(MyName+"["+MyID +"] 님이 진료를 신청하였습니다. \n");
+			//send("DoctorInfoRequest:");
+			
 		//	TreatmentSave.setDisable(false);
 	    }
 		
@@ -441,14 +451,13 @@ public class PatientController implements Initializable {
 	    {
           
 			if (loginOK== 0) {
-		send("newPatient:"+ID.getText()+">"+MasterID+">"+PW.getText()+">"+Name.getText()+">"+Sex.getText()+">"+Age.getText()+">"+Phone.getText()+">"+PHx.getText()+">"+FHx.getText());
-			
-	//		System.out.println("newPatient:"+ID.getText()+">"+Doctor+">"+PW.getText()+">"+Name.getText()+">"+Sex.getText()+">"+Age.getText()+">"+Phone.getText()+">"+PHx.getText()+">"+FHx.getText());
-			} else {
-				send("updatePatientInfo:"+ID.getText()+">"+MasterID+">"+PW.getText()+">"+Name.getText()+">"+Sex.getText()+">"+Age.getText()+">"+Phone.getText()+">"+PHx.getText()+">"+FHx.getText());
+				send("newPatient:"+ID.getText()+">"+MasterID+">"+PW.getText()+">"+Name.getText()+">"+Sex.getText()+">"+Age.getText()+">"+Phone.getText()+">"+PHx.getText()+">"+FHx.getText());
 				
-		//		System.out.println("updatePatientInfo:"+ID.getText()+">"+Doctor+">"+PW.getText()+">"+Name.getText()+">"+Sex.getText()+">"+Age.getText()+">"+Phone.getText()+">"+PHx.getText()+">"+FHx.getText());
-				
+				//		System.out.println("newPatient:"+ID.getText()+">"+Doctor+">"+PW.getText()+">"+Name.getText()+">"+Sex.getText()+">"+Age.getText()+">"+Phone.getText()+">"+PHx.getText()+">"+FHx.getText());
+						} else {
+							send("updatePatientInfo:"+ID.getText()+">"+MasterID+">"+PW.getText()+">"+Name.getText()+">"+Sex.getText()+">"+Age.getText()+">"+Phone.getText()+">"+PHx.getText()+">"+FHx.getText());
+							
+					//		System.out.println("updatePatientInfo:"+ID.getText()+">"+Doctor+">"+PW.getText()+">"+Name.getText()+">"+Sex.getText()+">"+Age.getText()+">"+Phone.getText()+">"+PHx.getText()+">"+FHx.getText());
 			}
 			
          
@@ -461,8 +470,9 @@ public class PatientController implements Initializable {
 	    {
 			   Chats = Chat.getText();
 				
-			   send("chat:"+MyID+">"+DoctorID+">"+Chats+"\n");
-			   TalkBoard.appendText(Chats+"\n");
+			   send("chat:" + MyID+ ">" +DoctorID+ ">" +Chats+"\n");
+			   //TalkBoard.appendText(Chats+"\n");
+			   TalkBoard.appendText("["+MyID+"] "+Chats+"\n");
 			
 			   Chat.setText("");
 	           Chat.requestFocus();
@@ -636,13 +646,15 @@ public class PatientController implements Initializable {
 		   	    	
 		    }
 		    
+		    @FXML
 		    private void clearsCanvas()
 		    {
-		   //     gcf.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		    	gcf.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		        gcb.clearRect(0, 0, canvasef.getWidth(), canvasef.getHeight());
+		    
+		        send("Clear:"+MyID+">"+DoctorID);
 		    }
 		    
-
      	 
 		    @FXML 
 		    private void clearCanvas(ActionEvent e)
@@ -651,7 +663,6 @@ public class PatientController implements Initializable {
 		    	send("Clear:"+MyID+">"+DoctorID);
 		    	
 		    }
-		    
 
 
 		    @FXML
@@ -660,7 +671,74 @@ public class PatientController implements Initializable {
 		        
 		        freedesign = true;
 		    }
+		    
+		    
+		    @FXML
+		    public void fileChooserOnClick(ActionEvent e){
+		    	
+		    	fileChoose();
+		    	// Stage stage = (Stage) file.getScene().getWindow();
+		    	
+		    
+		    }
+		    
+		    public void fileChoose() {
+		    	FileChooser fileChooser = new FileChooser();
+		        fileChooser.setTitle("Open a file");
+		        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")+ "/Desktop"));
+		        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JPEG Image","*.jpg"), new FileChooser.ExtensionFilter("PNG Image", "*.png"), new FileChooser.ExtensionFilter("All image files","*.jpg","*.png"));
+		        //fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text file","*.txt"));
+		        // this is for saving a file. remove the setInitialFileName if you are opening a file
+		        //fileChooser.setInitialFileName("Untitled");
+		        Stage stage = (Stage) fileChooserButton.getScene().getWindow();
+		        File selectedFile = fileChooser.showOpenDialog(stage);
+		       
+		        
+		       
+		       // stage = (Stage) file.getScene().getWindow();
+		        //File selectedFile = fileChooser.showOpenDialog(stage);
+		        if(selectedFile != null){
+
+		            // this is for saving a file
+		            /*try {
+		                FileWriter fileWriter = new FileWriter(selectedFile);
+		                BufferedWriter writer = new BufferedWriter(fileWriter);
+		                writer.write("Learning how to use the JavaFX FileChooser");
+		                writer.close();
+		                System.out.println("The file has been saved in "+ selectedFile.getAbsolutePath());
+		            } catch (IOException e) {
+		                throw new RuntimeException(e);
+		            }*/
+
+		                //this is for opening a file
+		                //Label.setText(selectedFile.getName());
+		                Image image = new Image(selectedFile.getPath());
+		                imgView.setImage(image);
+
+		                //send()
+		                /* This is for reading a text file
+		                try {
+		                    BufferedReader bufferedReader = new BufferedReader(new FileReader(selectedFile));
+		                    StringBuilder stringBuilder = new StringBuilder();
+		                    String line;
+		                    while((line = bufferedReader.readLine()) != null){
+		                        stringBuilder.append(line).append("\n");
+		                    }
+		                    System.out.println(stringBuilder.toString());
+		                } catch (FileNotFoundException e) {
+		                    throw new RuntimeException(e);
+		                } catch (IOException e) {
+		                    throw new RuntimeException(e);
+		                }*/
+		        }else{
+		            System.out.println("No file has been selected");
+		        }
+		    }
+		    
+		    
+		   
 	    
+		    
 			
 			
 		 
