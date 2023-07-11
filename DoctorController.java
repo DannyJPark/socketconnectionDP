@@ -109,6 +109,9 @@ public class DoctorController implements Initializable {
 	 String newPatientPMHx, newPatientDrugHx,rPatientPW; 
 	 String newDoctorID, newDoctorPW, newDoctorName;
 	 
+	 String receivedFilePath;
+	 //String receivedFilePath1= "C:";
+	 
 	 
 	 String tempPatientID[]= new String[10];
 	 String tempPatientName[] = new String [10];
@@ -141,6 +144,7 @@ public class DoctorController implements Initializable {
 	 String DrugList2[]= new String[12];
 	 String DrugList3[]= new String[12];
 
+	 
 	 
 	 
 	 @FXML
@@ -193,11 +197,11 @@ public class DoctorController implements Initializable {
 		                    
 			    nowString = now.toString();   
 			    
-			   // readPatientInfo();
-			  //  readDoctorInfo();
-			  //  readDisease();
-			   // readDrug();
-			   // readRecord();
+			    readPatientInfo();
+			    readDoctorInfo();
+			    readDisease();
+			    readDrug();
+			    readRecord();
 			    
 			               
 
@@ -210,7 +214,7 @@ public class DoctorController implements Initializable {
 			//	 gcb..setStroke(colorpick.setValue(Color.rgb(0,0,0)));	
 				 freedesign = true;
 				 clearAll();
-			 	ObservableList<String> PatientArrayList =  FXCollections.observableArrayList(); 
+			     ObservableList<String> PatientArrayList =  FXCollections.observableArrayList(); 
 				 PatientList.setItems(FXCollections.observableArrayList());
 			//	 PatientList.getItems().add("");
 				 Prescription1.setItems(FXCollections.observableArrayList(DrugList1));
@@ -277,7 +281,7 @@ public class DoctorController implements Initializable {
 						dis2=DiseaseList1[new_value.intValue()] ;
 					}
 				 });
-				
+		/*		
 				for (int i=0;i<10;i++) {
 					patientID[i]="";
 					doctorID[i]="";
@@ -294,7 +298,7 @@ public class DoctorController implements Initializable {
 				for (int i=0;i<100;i++) {
 					recordPatientID[i]="";
 				}
-				
+		*/		
 				
 		}    
 				
@@ -420,18 +424,18 @@ public class DoctorController implements Initializable {
 							else if (pars[0].equals("newRecord")) {
 								pars[1].split(">");
 								if (MasterID.equals(MyID)) {
-									newPID = pars[1].split(">")[0];
-									newPName = pars[1].split(">")[1];
-									newDID=pars[1].split(">")[2];
-									newDName = pars[1].split(">")[3];
-									newSx = pars[1].split(">")[0];
-									newTx = pars[1].split(">")[1];
-									newDis1=pars[1].split(">")[2];
-									newDis2 = pars[1].split(">")[3];
-									newPre1 = pars[1].split(">")[0];
-									newPre2 = pars[1].split(">")[1];
-									newPre3=pars[1].split(">")[2];
-									newNow = pars[1].split(">")[3];
+									newPID = pars[1].split(">")[2];
+									newPName = pars[1].split(">")[3];
+									newDID=pars[1].split(">")[4];
+									newDName = pars[1].split(">")[5];
+									newSx = pars[1].split(">")[6];
+									newTx = pars[1].split(">")[7];
+									newDis1=pars[1].split(">")[8];
+									newDis2 = pars[1].split(">")[9];
+									newPre1 = pars[1].split(">")[10];
+									newPre2 = pars[1].split(">")[11];
+									newPre3=pars[1].split(">")[12];
+									newNow = pars[1].split(">")[13];
 									
 							 
 									newRecordInsert();
@@ -709,6 +713,14 @@ public class DoctorController implements Initializable {
 								}
 						   
 							}
+							
+							
+							else if (pars[0].equals("ImageFile")){
+								
+								receivedFilePath = pars[1]+":"+pars[2];
+								System.out.println(receivedFilePath);
+								setFile();
+							}
 						  
 					 }
 					 
@@ -763,11 +775,11 @@ public class DoctorController implements Initializable {
 			//	 send("RecordRequest:"+ID.getText()+ ">" + MasterID );
 			
 	*/			 
-			 	readPatientInfo();
-			    readDoctorInfo();
-			    readDisease();
-			    readDrug();
-			    readRecord();
+			// 	readPatientInfo();
+			//    readDoctorInfo();
+			 //   readDisease();
+			 //   readDrug();
+			//    readRecord();
 			    
 				 doctorLoginCheck();	 
 			 }		 
@@ -1081,18 +1093,18 @@ public class DoctorController implements Initializable {
 			if (pre2.equals("")) pre2 ="-";
 			if (pre3.equals("")) pre3 ="-";
 			
-			
+			System.out.println("complete:"+ MyID + ">" +selectedPatientID+">"+Treatment.getText()+">"+dis1+">"+dis2+">"+pre1+">"+pre2+">"+pre3);
 			
 			send("chat:"+MyID + ">" + selectedPatientID+">"+MyName+"["+MyID+"] 의사가 "+selectedPatientName+" 환자분의 \n 진료를 완료하였습니다.!!"+"\n");
 			send("complete:"+MyID + ">" +selectedPatientID+">"+Treatment.getText()+">"+dis1+">"+dis2+">"+pre1+">"+pre2+">"+pre3);
-			send("newRecord:"+MyID + ">" +MasterID+">"+ selectedPatientID+">"+selectedPatientName+">"+ MyID+">"+MyName+">"+Sx.getText()+">"+Treatment.getText()+">"+dis1+">"+dis2+">"+pre1+">"+pre2+">"+pre3);
+			send("newRecord:"+MyID + ">" +MasterID+">"+ selectedPatientID+">"+selectedPatientName+">"+ MyID+">"+MyName+">"+Sx.getText()+">"+Treatment.getText()+">"+dis1+">"+dis2+">"+pre1+">"+pre2+">"+pre3+">"+nowString);
 	//	insertRecord();
 		//	updateRecord();
 			Prescription1.setValue(DrugList1[indexDrug] );
 			Prescription2.setValue(DrugList1[indexDrug] );
 			Prescription3.setValue(DrugList1[indexDrug] );
 			Diagnosis1.setValue(DiseaseList1[indexDisease]);
-			Diagnosis2.setValue(DiseaseList2[indexDisease]);
+			Diagnosis2.setValue(DiseaseList1[indexDisease]);
 			
 			
 			
@@ -1146,11 +1158,11 @@ public class DoctorController implements Initializable {
 			//	PatientList.setDisable(true);
 
 				Treatment.setDisable(true);
-				Diagnosis1.setDisable(true);
-				Diagnosis2.setDisable(true);
-				Prescription1.setDisable(true);
-				Prescription2.setDisable(true);
-				Prescription3.setDisable(true);
+				//Diagnosis1.setDisable(true);
+				//Diagnosis2.setDisable(true);
+				//Prescription1.setDisable(true);
+				//Prescription2.setDisable(true);
+				//Prescription3.setDisable(true);
 				
 			//	pane.setDisable(true);
 		//		canvas.setDisable(true);
@@ -1299,7 +1311,7 @@ public class DoctorController implements Initializable {
 		   	    	
 		    }
 		    
-		    @FXML
+		    
 		    private void clearsCanvas()
 		    {
 		        gcf.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -1311,7 +1323,7 @@ public class DoctorController implements Initializable {
 
      	 
 		    @FXML 
-		    private void clearCanvas(ActionEvent e)
+		    public void clearCanvas(ActionEvent e)
 		    {
 		        
 		    	send("Clear:"+MyID + ">" +selectedPatientID);
@@ -1328,58 +1340,7 @@ public class DoctorController implements Initializable {
 		    
 		    }
 		    
-		    public void fileChoose() {
-		    	FileChooser fileChooser = new FileChooser();
-		        fileChooser.setTitle("Open a file");
-		        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")+ "/Desktop"));
-		        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JPEG Image","*.jpg"), new FileChooser.ExtensionFilter("PNG Image", "*.png"), new FileChooser.ExtensionFilter("All image files","*.jpg","*.png"));
-		        //fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text file","*.txt"));
-		        // this is for saving a file. remove the setInitialFileName if you are opening a file
-		        //fileChooser.setInitialFileName("Untitled");
-		        Stage stage = (Stage) fileChooserButton.getScene().getWindow();
-		        File selectedFile = fileChooser.showOpenDialog(stage);
-		       
-		        
-		       
-		       // stage = (Stage) file.getScene().getWindow();
-		        //File selectedFile = fileChooser.showOpenDialog(stage);
-		        if(selectedFile != null){
-
-		            // this is for saving a file
-		            /*try {
-		                FileWriter fileWriter = new FileWriter(selectedFile);
-		                BufferedWriter writer = new BufferedWriter(fileWriter);
-		                writer.write("Learning how to use the JavaFX FileChooser");
-		                writer.close();
-		                System.out.println("The file has been saved in "+ selectedFile.getAbsolutePath());
-		            } catch (IOException e) {
-		                throw new RuntimeException(e);
-		            }*/
-
-		                //this is for opening a file
-		                //Label.setText(selectedFile.getName());
-		                Image image = new Image(selectedFile.getPath());
-		                imgView.setImage(image);
-
-
-		                /* This is for reading a text file
-		                try {
-		                    BufferedReader bufferedReader = new BufferedReader(new FileReader(selectedFile));
-		                    StringBuilder stringBuilder = new StringBuilder();
-		                    String line;
-		                    while((line = bufferedReader.readLine()) != null){
-		                        stringBuilder.append(line).append("\n");
-		                    }
-		                    System.out.println(stringBuilder.toString());
-		                } catch (FileNotFoundException e) {
-		                    throw new RuntimeException(e);
-		                } catch (IOException e) {
-		                    throw new RuntimeException(e);
-		                }*/
-		        }else{
-		            System.out.println("No file has been selected");
-		        }
-		    }
+		   
 		    
 
 		    @FXML
@@ -1389,7 +1350,7 @@ public class DoctorController implements Initializable {
 		        freedesign = true;
 		        gcb.setStroke(colorpick.getValue());
 		    }
-public void replyDrugRequest() { 
+		    public void replyDrugRequest() { 
 		    	
 		    	int i=0;
 		    	while (!DrugList1[i].equals("")) {
@@ -1523,8 +1484,8 @@ public void replyDrugRequest() {
 					while (rs.next()) {
 						
 						DrugList1[indexDrug] = rs.getString(1);
-						DrugList2[indexDrug] = rs.getString(1);
-						DrugList3[indexDrug] =rs.getString(1);
+				//		DrugList2[indexDrug] = rs.getString(1);
+				//		DrugList3[indexDrug] =rs.getString(1);
 				//		Prescription1.getItems().add(DrugList1[indexDrug]);
 				//		Prescription2.getItems().add(DrugList1[indexDrug]);
 				//		Prescription3.getItems().add(DrugList1[indexDrug]);
@@ -1534,8 +1495,8 @@ public void replyDrugRequest() {
 					indexDrug++;
 					}
 					DrugList1[indexDrug] = "";
-					DrugList2[indexDrug] = "";
-					DrugList3[indexDrug] = "";
+			//		DrugList2[indexDrug] = "";
+			//		DrugList3[indexDrug] = "";
 					Prescription1.getItems().addAll(DrugList1);
 					Prescription2.getItems().addAll(DrugList1);
 					Prescription3.getItems().addAll(DrugList1);
@@ -1560,16 +1521,16 @@ public void replyDrugRequest() {
 					while (rs.next()) {
 						
 						DiseaseList1[indexDisease] = rs.getString(1);
-						DiseaseList2[indexDisease] = rs.getString(1);
+				//		DiseaseList2[indexDisease] = rs.getString(1);
 						
 						
 			//	System.out.println(DiseaseList1[indexDisease]+"  "+DiseaseList2[indexDisease]);		
 						indexDisease++;
 					}
 					DiseaseList1[indexDisease]="";
-					DiseaseList2[indexDisease]="";
+				//	DiseaseList2[indexDisease]="";
 					Diagnosis1.getItems().addAll(DiseaseList1);
-					Diagnosis2.getItems().addAll(DiseaseList2);
+					Diagnosis2.getItems().addAll(DiseaseList1);
 					System.out.println("병명 읽기 성공");	
 			//		conn.close();
 			    	
@@ -1864,5 +1825,65 @@ public void replyDrugRequest() {
 		    	        } 
 		    	        
 		    	    }
+		    	    
+		    	    public void fileChoose() {
+				    	FileChooser fileChooser = new FileChooser();
+				        fileChooser.setTitle("Open a file");
+				        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")+ "/Desktop"));
+				        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JPEG Image","*.jpg"), new FileChooser.ExtensionFilter("PNG Image", "*.png"), new FileChooser.ExtensionFilter("All image files","*.jpg","*.png"));
+				        //fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text file","*.txt"));
+				        // this is for saving a file. remove the setInitialFileName if you are opening a file
+				        //fileChooser.setInitialFileName("Untitled");
+				        Stage stage = (Stage) fileChooserButton.getScene().getWindow();
+				        File selectedFile = fileChooser.showOpenDialog(stage);
+				       
+				        
+				       
+				       // stage = (Stage) file.getScene().getWindow();
+				        //File selectedFile = fileChooser.showOpenDialog(stage);
+				        if(selectedFile != null){
+
+				            // this is for saving a file
+				            /*try {
+				                FileWriter fileWriter = new FileWriter(selectedFile);
+				                BufferedWriter writer = new BufferedWriter(fileWriter);
+				                writer.write("Learning how to use the JavaFX FileChooser");
+				                writer.close();
+				                System.out.println("The file has been saved in "+ selectedFile.getAbsolutePath());
+				            } catch (IOException e) {
+				                throw new RuntimeException(e);
+				            }*/
+
+				                //this is for opening a file
+				                //Label.setText(selectedFile.getName());
+				                Image image = new Image(selectedFile.getAbsolutePath());
+				                send("Imagefile:" + selectedFile.getAbsolutePath());
+				                imgView.setImage(image);
+				                //send("Imagefile:" + selectedFile.getAbsolutePath());
+				                System.out.println(selectedFile.getAbsolutePath());
+
+				                /* This is for reading a text file
+				                try {
+				                    BufferedReader bufferedReader = new BufferedReader(new FileReader(selectedFile));
+				                    StringBuilder stringBuilder = new StringBuilder();
+				                    String line;
+				                    while((line = bufferedReader.readLine()) != null){
+				                        stringBuilder.append(line).append("\n");
+				                    }
+				                    System.out.println(stringBuilder.toString());
+				                } catch (FileNotFoundException e) {
+				                    throw new RuntimeException(e);
+				                } catch (IOException e) {
+				                    throw new RuntimeException(e);
+				                }*/
+				        }else{
+				            System.out.println("No file has been selected");
+				        }
+				    }
+		    	    
+		    	    public void setFile() {
+			    	 	Image image = new Image(receivedFilePath);
+		                imgView.setImage(image);
+				    }
 	    
 }
