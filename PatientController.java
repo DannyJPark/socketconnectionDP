@@ -55,6 +55,8 @@ public class PatientController implements Initializable {
 	 String riD,rPW,rName,rSex,rAge,rPhone,rPMHx,rDrugHx;
 	 String DoctorID,DoctorName,MyName,MyID, dName = "의사";
 	 int loginOK=0;
+	 
+	 String receivedFilePath;
 	
 	 public GraphicsContext gcb, gcf; // canvas에 색 출력  gcf-canvas gcb-canvasef 
 	 public boolean freedesign = true; //true false로 키고 끄기
@@ -67,6 +69,8 @@ public class PatientController implements Initializable {
 	 Paint colors=Color.rgb(0,0,0);
 	 String colorS=colors.toString();
 	 double sliders=2;
+	 
+	 //String receivedFilePath1="C:";
 	 //String[] pID; String[] pName;
 	 @FXML
 	 
@@ -274,6 +278,13 @@ public class PatientController implements Initializable {
 				else if (pars[0].equals("patientLoginFail")) {
 					loginFail();
 					
+				}
+				
+				else if (pars[0].equals("ImageFile")){
+					receivedFilePath = pars[1]+":"+pars[2];
+					//receivedFilePath1 = receivedFilePath1+pars[2];
+					System.out.println(receivedFilePath);
+					setFile();
 				}
 				
 		
@@ -536,7 +547,15 @@ public class PatientController implements Initializable {
 			Prescription1.clear();
 			Prescription2.clear();
 			Prescription3.clear();
-			
+			Disease1.clear();
+			Disease2.clear();
+			Tx.setText("");
+			Prescription1.setText("");
+			Prescription2.setText("");
+			Prescription3.setText("");
+			Disease1.setText("");
+			Disease2.setText("");
+				
 			ID.setDisable(false);
 			PW.setDisable(false);
 			Login.setDisable(false);
@@ -712,10 +731,10 @@ public class PatientController implements Initializable {
 
 		                //this is for opening a file
 		                //Label.setText(selectedFile.getName());
-		                Image image = new Image(selectedFile.getPath());
+		                Image image = new Image(selectedFile.getAbsolutePath());
+		                send("Imagefile:"+selectedFile.getAbsolutePath());
 		                imgView.setImage(image);
-
-		                //send()
+		                System.out.println(selectedFile.getAbsolutePath());
 		                /* This is for reading a text file
 		                try {
 		                    BufferedReader bufferedReader = new BufferedReader(new FileReader(selectedFile));
@@ -737,7 +756,12 @@ public class PatientController implements Initializable {
 		    
 		    
 		   
-	    
+		    public void setFile() {
+		    		//File receivedFile = new File(receivedFilePath);
+		    	 	
+		    		Image image = new Image(receivedFilePath);
+	                imgView.setImage(image);
+			    }
 		    
 			
 			
