@@ -109,7 +109,7 @@ public class DoctorController implements Initializable {
 	 String newPatientPMHx, newPatientDrugHx,rPatientPW; 
 	 String newDoctorID, newDoctorPW, newDoctorName;
 	 
-	 String receivedFilePath;
+	 String receivedFileNum;
 	 //String receivedFilePath1= "C:";
 	 
 	 
@@ -350,7 +350,7 @@ public class DoctorController implements Initializable {
 				                
 				                
 				                
-				                if (message.contains(":")) {
+				                if ((message.contains(":"))) {
 				                	Msg=message;
 				                	receiveMsg();
 				                	
@@ -369,14 +369,31 @@ public class DoctorController implements Initializable {
 				    public void receiveMsg() {
 				//    	  System.out.println("Doctor Receive: "+Msg);
 						 //String parts[];
+				    	 
+				    	 
+					    	
+					    	
 							String[] pars = Msg.split(":");
+							
+							if (pars[0].equals("Imagefile")){
+								if(pars[1].equals("Brain")) {
+									Image image = new Image("C:\\Users\\kingd\\OneDrive\\바탕 화면\\MRI_Brain.jpg");
+						            imgView.setImage(image);
+						            
+								}
+								
+								if(pars[1].equals("Neck")){
+									Image image = new Image("C:\\Users\\kingd\\OneDrive\\바탕 화면\\MRI_Neck.jpg");
+									imgView.setImage(image);
+								}
+							}
+							
 							
 							if(pars[0].equals("DoctorInfoRequest")) {
 								
-											send("DoctorInfo:" + MyID);
-											
-									}
-							
+								send("DoctorInfo:" + MyID);
+								
+						}
 							if (pars[0].equals("patientSubmit")) {
 								pars[1].split(">");
 								rPatientID1 = pars[1].split(">")[0];
@@ -712,14 +729,6 @@ public class DoctorController implements Initializable {
 									}
 								}
 						   
-							}
-							
-							
-							else if (pars[0].equals("ImageFile")){
-								
-								receivedFilePath = pars[1]+":"+pars[2];
-								System.out.println(receivedFilePath);
-								setFile();
 							}
 						  
 					 }
@@ -1098,8 +1107,8 @@ public class DoctorController implements Initializable {
 			send("chat:"+MyID + ">" + selectedPatientID+">"+MyName+"["+MyID+"] 의사가 "+selectedPatientName+" 환자분의 \n 진료를 완료하였습니다.!!"+"\n");
 			send("complete:"+MyID + ">" +selectedPatientID+">"+Treatment.getText()+">"+dis1+">"+dis2+">"+pre1+">"+pre2+">"+pre3);
 			send("newRecord:"+MyID + ">" +MasterID+">"+ selectedPatientID+">"+selectedPatientName+">"+ MyID+">"+MyName+">"+Sx.getText()+">"+Treatment.getText()+">"+dis1+">"+dis2+">"+pre1+">"+pre2+">"+pre3+">"+nowString);
-	//	insertRecord();
-		//	updateRecord();
+			newRecordInsert();
+			//	updateRecord();
 			Prescription1.setValue(DrugList1[indexDrug] );
 			Prescription2.setValue(DrugList1[indexDrug] );
 			Prescription3.setValue(DrugList1[indexDrug] );
@@ -1309,14 +1318,15 @@ public class DoctorController implements Initializable {
 		    	colors=colorpick.getValue();
 		    	colorS=colors.toString();		    
 		   	    	
-		    }
+		    }				
+
+
 		    
-		    
-		    private void clearsCanvas()
+		    public void clearsCanvas()
 		    {
 		        gcf.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		        gcb.clearRect(0, 0, canvasef.getWidth(), canvasef.getHeight());
-		        send("Clear:"+MyID + ">" +selectedPatientID);
+		    //    send("Clear:"+MyID + ">" +selectedPatientID);
 		        
 		    }
 		    
@@ -1330,16 +1340,6 @@ public class DoctorController implements Initializable {
 		    //	send("Clear:");
 		    }
 		    
-		    
-		    @FXML
-		    public void fileChooserOnClick(ActionEvent e){
-		    	
-		    	fileChoose();
-		    	// Stage stage = (Stage) file.getScene().getWindow();
-		    	
-		    
-		    }
-		    
 		   
 		    
 
@@ -1350,6 +1350,8 @@ public class DoctorController implements Initializable {
 		        freedesign = true;
 		        gcb.setStroke(colorpick.getValue());
 		    }
+		    
+		    
 		    public void replyDrugRequest() { 
 		    	
 		    	int i=0;
@@ -1700,6 +1702,7 @@ public class DoctorController implements Initializable {
 	 	            		pstmt.setString(12, newNow);
 	 	            		
 	 	                    pstmt.executeUpdate();
+	 	                    
 		    	            System.out.println("진료기록 저장성공");
 		    	        } catch (SQLException e) {
 		    	        	e.printStackTrace();
@@ -1823,67 +1826,46 @@ public class DoctorController implements Initializable {
 		    	        	
 		    	        	e.printStackTrace();
 		    	        } 
-		    	        
 		    	    }
 		    	    
+		    	    
+				    @FXML
+				    public void fileChooserOnClick(ActionEvent e){
+				    	
+				    	fileChoose();				    	
+				    
+				    }
+				    
 		    	    public void fileChoose() {
 				    	FileChooser fileChooser = new FileChooser();
 				        fileChooser.setTitle("Open a file");
 				        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")+ "/Desktop"));
 				        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JPEG Image","*.jpg"), new FileChooser.ExtensionFilter("PNG Image", "*.png"), new FileChooser.ExtensionFilter("All image files","*.jpg","*.png"));
-				        //fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text file","*.txt"));
-				        // this is for saving a file. remove the setInitialFileName if you are opening a file
-				        //fileChooser.setInitialFileName("Untitled");
+				        
 				        Stage stage = (Stage) fileChooserButton.getScene().getWindow();
 				        File selectedFile = fileChooser.showOpenDialog(stage);
 				       
-				        
-				       
-				       // stage = (Stage) file.getScene().getWindow();
-				        //File selectedFile = fileChooser.showOpenDialog(stage);
+				      
 				        if(selectedFile != null){
 
-				            // this is for saving a file
-				            /*try {
-				                FileWriter fileWriter = new FileWriter(selectedFile);
-				                BufferedWriter writer = new BufferedWriter(fileWriter);
-				                writer.write("Learning how to use the JavaFX FileChooser");
-				                writer.close();
-				                System.out.println("The file has been saved in "+ selectedFile.getAbsolutePath());
-				            } catch (IOException e) {
-				                throw new RuntimeException(e);
-				            }*/
-
-				                //this is for opening a file
-				                //Label.setText(selectedFile.getName());
+				           
 				                Image image = new Image(selectedFile.getAbsolutePath());
-				                send("Imagefile:" + selectedFile.getAbsolutePath());
-				                imgView.setImage(image);
-				                //send("Imagefile:" + selectedFile.getAbsolutePath());
-				                System.out.println(selectedFile.getAbsolutePath());
-
-				                /* This is for reading a text file
-				                try {
-				                    BufferedReader bufferedReader = new BufferedReader(new FileReader(selectedFile));
-				                    StringBuilder stringBuilder = new StringBuilder();
-				                    String line;
-				                    while((line = bufferedReader.readLine()) != null){
-				                        stringBuilder.append(line).append("\n");
-				                    }
-				                    System.out.println(stringBuilder.toString());
-				                } catch (FileNotFoundException e) {
-				                    throw new RuntimeException(e);
-				                } catch (IOException e) {
-				                    throw new RuntimeException(e);
-				                }*/
+				                
+				                if ((selectedFile.getAbsolutePath()).equals("C:\\Users\\kingd\\OneDrive\\바탕 화면\\MRI_Brain.jpg")) {
+				                	send("Imagefile:Brain");
+				                	imgView.setImage(image);
+				                }
+				                
+				                if ((selectedFile.getAbsolutePath()).equals("C:\\Users\\kingd\\OneDrive\\바탕 화면\\MRI_Neck.jpg")) {
+				                	send("Imagefile:Neck");
+				                	imgView.setImage(image);
+				                }
+				               
 				        }else{
 				            System.out.println("No file has been selected");
 				        }
 				    }
 		    	    
-		    	    public void setFile() {
-			    	 	Image image = new Image(receivedFilePath);
-		                imgView.setImage(image);
-				    }
+			    	  
 	    
 }
